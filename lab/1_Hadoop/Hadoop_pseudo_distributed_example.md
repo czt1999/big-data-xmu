@@ -1,8 +1,8 @@
-## 1 Hadoop 安装和伪分布式配置
+### Hadoop 安装和伪分布式配置
 
 参考：http://dblab.xmu.edu.cn/blog/2441-2/
 
-#### 1.1 环境准备
+#### 1. 环境准备
 
 1）安装 Ubuntu 16.04
 
@@ -36,9 +36,9 @@ sudo apt-get install openssh-server
 
 如果还不成功，请检查防火墙和 SELinux 状态。
 
-5）安装 JDK 并设置好环境变量（`/etc/profile`）
+5）安装 JDK 并设置好环境变量（`~/.bashrc` 或 `/etc/profile`）
 
-#### 1.2 安装 Hadoop
+#### 2. 安装 Hadoop
 
 1）下载
 
@@ -57,11 +57,11 @@ export PATH=...:$HADOOP_HOME/bin
 
 执行`source /etc/profile` 使配置生效（这里的环境变量只在当前终端有效，请保持终端会话，或者重启使该配置在系统层次生效）
 
-#### 1.3 伪分布式配置
+#### 3. 伪分布式配置
 
 Hadoop 的配置文件位于 `/usr/local/hadoop/etc/hadoop/` 中，需要修改2个配置文件： core-site.xml、hdfs-site.xml，具体内容参考教程。
 
-#### 1.4 运行 Hadoop
+#### 4. 运行 Hadoop
 
 1）格式化 NameNode
 
@@ -75,7 +75,7 @@ NameNode 负责保存 HDFS 的元数据信息，比如命名空间信息、块�
 
 ```bash
 cd /usr/local/hadoop
-sbin/start-dfs.sh
+./sbin/start-dfs.sh
 ```
 
 如果出现如下错误：
@@ -94,7 +94,7 @@ ssh-add
 
 顺利启动后，可以用浏览器访问 [http://localhost:9870](http://localhost:9870/) 查看 NameNode 和 Datanode 信息。
 
-#### 1.5 运行 example
+#### 5. 运行 example
 
 1）在 HDFS 中创建用户目录
 
@@ -127,7 +127,7 @@ grep input output 'dfs[a-z.]+'
 hdfs dfs -cat output/*
 ```
 
-#### 1.6 关闭 Hadoop
+#### 6. 关闭 Hadoop
 
 ```bash
 ./sbin/stop-dfs.sh
