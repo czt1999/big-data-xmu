@@ -44,7 +44,7 @@ sudo apt-get install openssh-server
 
 前往 Hadoop 官网下载，使用 [3.1.3](https://hadoop.apache.org/release/3.1.3.html) 版本。
 
-解压至`/usr/local/hadoop`。
+解压至 `/usr/local/hadoop`。
 
 2）设置环境变量
 
@@ -55,7 +55,7 @@ export HADOOP_COMMON_LIB_NATIVE_DIR=$HADOOP_HOME/lib/native
 export PATH=...:$HADOOP_HOME/bin
 ```
 
-执行`source /etc/profile` 使配置生效（这里的环境变量只在当前终端有效，请保持终端会话，或者重启使该配置在系统层次生效）
+执行 `source /etc/profile` 使配置生效（这里的环境变量只在当前终端有效，请保持终端会话，或者重启使该配置在系统层次生效）
 
 #### 3. 伪分布式配置
 
@@ -96,7 +96,7 @@ ssh-add
 
 启动成功后，用 `jps` 查看进程，除了 NameNode 和 DataNode，还有一个 SecondaryNameNode，它的职责是帮助 NameNode 保存文件系统的快照。
 
-顺利启动后，可以用浏览器访问 [http://localhost:9870](http://localhost:9870/) 查看 NameNode 和 Datanode 信息。
+可以用浏览器访问 [http://localhost:9870](http://localhost:9870/) 查看 NameNode 和 Datanode 信息。
 
 #### 5. 运行 example
 
