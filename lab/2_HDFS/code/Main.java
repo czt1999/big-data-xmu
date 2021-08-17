@@ -8,5 +8,6 @@ public class Main {
         conf.set("fs.hdfs.impl", "org.apache.hadoop.hdfs.DistributedFileSystem");
         //Task1.example(conf);
         //Task2.example(conf);
+        //Task3.example(conf);
     }
 }
