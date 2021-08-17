@@ -1,44 +1,67 @@
+import org.apache.commons.io.FileExistsException;
 import org.apache.hadoop.conf.Configuration;
-import org.apache.hadoop.fs.FSDataInputStream;
-import org.apache.hadoop.fs.FSDataOutputStream;
-import org.apache.hadoop.fs.FileSystem;
-import org.apache.hadoop.fs.Path;
+import org.apache.hadoop.fs.*;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.net.URI;
 
 /**
  * 向 HDFS 上传任意文本文件，若指定文件已存在，由用户判断执行“追加”还是“覆盖”。
  */
 public class Task1 {
 
-    public static void putFile(String src, String dst, boolean overwrite, Configuration conf) {
+    public static void example() {
+        Configuration conf = new Configuration();
+        conf.set("fs.defaultFS", "hdfs://localhost:9000");
+        conf.set("fs.hdfs.impl", "org.apache.hadoop.hdfs.DistributedFileSystem");
+        Task1.copyFromLocal("/etc/profile",
+                "hdfs://localhost:9000/user/hadoop/profile", false, conf);
+    }
+
+    /**
+     *
+     * @param localDir 源文件名（非目录）
+     * @param hdfsDir 目标文件名（非目录）
+     * @param overwrite true-覆盖 false-追加
+     * @param conf org.apache.hadoop.conf.Configuration
+     */
+    public static void copyFromLocal(String localDir, String hdfsDir, boolean overwrite, Configuration conf) {
         FSDataInputStream inputStream = null;
         FSDataOutputStream outputStream = null;
-        try {
-            // 获取输入流（待上传文件）
-            Path pathSrc = new Path(src);
-            FileSystem fsSrc = FileSystem.get(URI.create(src), conf);
-            if (!fsSrc.exists(pathSrc) && !fsSrc.getFileStatus(pathSrc).isFile()) {
-                throw new FileNotFoundException("源文件不存在");
-            }
-            inputStream = fsSrc.open(pathSrc);
 
-            // 获取输出流
-            Path pathDst = new Path(dst);
-            FileSystem fsDst = FileSystem.get(URI.create(dst), conf);
-            if (fsSrc.exists(pathDst)) {
-                if (!overwrite) {
-                    System.out.println("指定文件已存在，不允许覆盖写，退出...");
-                    return;
+        try {
+            Path localPath = new Path(localDir);
+            Path hdfsPath = new Path(hdfsDir);
+
+            FileSystem local = FileSystem.getLocal(conf);
+            FileSystem hdfs = FileSystem.get(conf);
+
+            if (!local.exists(localPath)) {
+                throw new FileExistsException(localDir + " does not exist");
+            }
+
+            FileStatus localFileStatus = local.getFileStatus(localPath);
+            if (!localFileStatus.isFile()) {
+                throw new FileExistsException(localDir + " is not a file");
+            }
+
+            boolean exists;
+            if (exists = hdfs.exists(hdfsPath)) {
+                FileStatus hdfsFileStatus = hdfs.getFileStatus(hdfsPath);
+                if (!hdfsFileStatus.isFile()) {
+                    throw new FileExistsException(hdfsDir + " is not a file");
                 }
-                if (!fsSrc.getFileStatus(pathDst).isFile()) {
-                    throw new IOException("已存在目录文件");
-                }
-                outputStream = fsDst.append(pathDst);
+            }
+
+            // 打开输入流
+            inputStream = local.open(localPath);
+
+            // 打开输出流
+            if (overwrite || !exists) {
+                // 覆盖/创建
+                outputStream = hdfs.create(hdfsPath, true);
             } else {
-                outputStream = fsDst.create(pathDst);
+                // 追加
+                outputStream = hdfs.append(hdfsPath);
             }
 
             // 复制数据
@@ -48,7 +71,9 @@ public class Task1 {
                 outputStream.write(buffer, 0, len);
             }
 
-        } catch (Exception e) {
+            System.out.println("上传成功");
+
+        } catch (IOException e) {
             e.printStackTrace();
         } finally {
             try {
