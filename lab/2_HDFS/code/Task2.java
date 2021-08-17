@@ -1,49 +1,72 @@
+import org.apache.commons.io.FileExistsException;
 import org.apache.hadoop.conf.Configuration;
-import org.apache.hadoop.fs.FSDataInputStream;
-import org.apache.hadoop.fs.FSDataOutputStream;
-import org.apache.hadoop.fs.FileSystem;
-import org.apache.hadoop.fs.Path;
+import org.apache.hadoop.fs.*;
+import org.apache.hadoop.io.IOUtils;
 
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.net.URI;
 
 /**
  * 从 HDFS 下载指定文件，如果本地文件同名，则自动对下载的文件重命名
  */
 public class Task2 {
 
-    public static void getFile(String src, String dst, Configuration conf) {
+    public static void example(Configuration conf) {
+        String hdfsDir = "hdfs://localhost:9000/user/czt/profile";
+        String localDIr = "/tmp/hdfs/czt/profile";
+        Task2.copyToLocalFile(hdfsDir, localDIr, conf);
+    }
+
+    /**
+     * @param hdfsDir  源文件名（非目录）
+     * @param localDir 目标文件名（非目录）
+     * @param conf     org.apache.hadoop.conf.Configuration
+     */
+    public static void copyToLocalFile(String hdfsDir, String localDir, Configuration conf) {
         FSDataInputStream inputStream = null;
         FSDataOutputStream outputStream = null;
-        try {
-            // 获取输入流（HDFS上的文件）
-            Path pathSrc = new Path(src);
-            FileSystem fsSrc = FileSystem.get(URI.create(src), conf);
-            if (!fsSrc.exists(pathSrc) && !fsSrc.getFileStatus(pathSrc).isFile()) {
-                throw new FileNotFoundException("源文件不存在");
-            }
-            inputStream = fsSrc.open(pathSrc);
 
-            // 获取输出流
-            Path pathDst = new Path(dst);
-            FileSystem fsDst = FileSystem.get(URI.create(dst), conf);
-            if (fsSrc.exists(pathDst)) {
-                // 需要重命名
-                String[] tmp = dst.split(File.pathSeparator);
-                int index = dst.lastIndexOf(File.pathSeparator);
-                String filename = tmp[tmp.length - 1] + "~";
-                String newDst = (index >= 0 ? dst.substring(index + 1) : "") + filename;
-                pathDst = new Path(newDst);
+        try {
+            Path hdfsPath = new Path(hdfsDir);
+            Path localPath = new Path(localDir);
+
+            FileSystem hdfs = FileSystem.get(conf);
+            FileSystem local = FileSystem.getLocal(conf);
+
+            if (!hdfs.exists(hdfsPath)) {
+                throw new FileExistsException(hdfsDir + " does not exist");
             }
-            outputStream = fsDst.create(pathDst);
+
+            FileStatus hdfsFileStatus = hdfs.getFileStatus(hdfsPath);
+            if (!hdfsFileStatus.isFile()) {
+                throw new FileExistsException(hdfsDir + " is not a file");
+            }
+
+            if (local.exists(localPath)) {
+                // 重命名
+                String newLocalDir;
+                int indexOfSep = localDir.lastIndexOf(File.separator);
+                int indexOfDot = localDir.lastIndexOf('.');
+                String filename = localDir.substring(indexOfSep + 1);
+                String suffix = "";
+                if (indexOfSep + 1 < indexOfDot) {
+                    // 文件名有后缀
+                    suffix = localDir.substring(indexOfDot);
+                    filename = filename.substring(0, filename.length() - suffix.length());
+                }
+                newLocalDir = localDir.substring(0, indexOfSep + 1) + filename + "~" + suffix;
+                localPath = new Path(newLocalDir);
+            }
+
+            // 打开输入流
+            inputStream = hdfs.open(hdfsPath);
+
+            // 打开输出流
+            outputStream = local.create(localPath);
 
             // 复制数据
-            byte[] buffer = new byte[1024];
-            int len = -1;
-            while ((len = inputStream.read(buffer)) > 0) {
-                outputStream.write(buffer, 0, len);
-            }
+            IOUtils.copyBytes(inputStream, outputStream, 4096);
+
+            System.out.println("下载成功 >> " + localPath);
 
         } catch (Exception e) {
             e.printStackTrace();

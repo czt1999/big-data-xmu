@@ -1,6 +1,7 @@
 import org.apache.commons.io.FileExistsException;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.*;
+import org.apache.hadoop.io.IOUtils;
 
 import java.io.IOException;
 
@@ -9,20 +10,17 @@ import java.io.IOException;
  */
 public class Task1 {
 
-    public static void example() {
-        Configuration conf = new Configuration();
-        conf.set("fs.defaultFS", "hdfs://localhost:9000");
-        conf.set("fs.hdfs.impl", "org.apache.hadoop.hdfs.DistributedFileSystem");
-        Task1.copyFromLocal("/etc/profile",
-                "hdfs://localhost:9000/user/hadoop/profile", false, conf);
+    public static void example(Configuration conf) {
+        String localDir = "/etc/profile";
+        String hdfsDir = "hdfs://localhost:9000/user/czt/profile";
+        Task1.copyFromLocal(localDir, hdfsDir, false, conf);
     }
 
     /**
-     *
-     * @param localDir 源文件名（非目录）
-     * @param hdfsDir 目标文件名（非目录）
+     * @param localDir  源文件名（非目录）
+     * @param hdfsDir   目标文件名（非目录）
      * @param overwrite true-覆盖 false-追加
-     * @param conf org.apache.hadoop.conf.Configuration
+     * @param conf      org.apache.hadoop.conf.Configuration
      */
     public static void copyFromLocal(String localDir, String hdfsDir, boolean overwrite, Configuration conf) {
         FSDataInputStream inputStream = null;
@@ -65,11 +63,7 @@ public class Task1 {
             }
 
             // 复制数据
-            byte[] buffer = new byte[1024];
-            int len = -1;
-            while ((len = inputStream.read(buffer)) > 0) {
-                outputStream.write(buffer, 0, len);
-            }
+            IOUtils.copyBytes(inputStream, outputStream, 4096);
 
             System.out.println("上传成功");
 
