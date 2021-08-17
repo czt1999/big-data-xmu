@@ -59,7 +59,7 @@ export PATH=...:$HADOOP_HOME/bin
 
 #### 3. 伪分布式配置
 
-Hadoop 的配置文件位于 `/usr/local/hadoop/etc/hadoop/` 中，需要修改2个配置文件： core-site.xml、hdfs-site.xml，具体内容参考教程。
+Hadoop 的配置文件位于 `$HADOOP_HOME/etc/hadoop/` 中，需要修改2个配置文件： core-site.xml、hdfs-site.xml，具体内容参考教程。
 
 #### 4. 运行 Hadoop
 
@@ -90,7 +90,11 @@ sign_and_send_pubkey: signing failed: agent refused operation
 ssh-add
 ```
 
-用 `jps` 查看进程，除了 NameNode 和 DataNode，还有一个 SecondaryNameNode，它的职责是帮助 NameNode 保存文件系统的快照。
+如果 `java -version` 正常输出但提示 JAVA_HOME 找不到，请在 `$HADOOP_HOME/etc/hadoop-env.sh` 中手动 export。
+
+如果还是不能正常启动，请前往 `$HADOOP_HOME/logs` 查看日志，定位具体的错误。
+
+启动成功后，用 `jps` 查看进程，除了 NameNode 和 DataNode，还有一个 SecondaryNameNode，它的职责是帮助 NameNode 保存文件系统的快照。
 
 顺利启动后，可以用浏览器访问 [http://localhost:9870](http://localhost:9870/) 查看 NameNode 和 Datanode 信息。
 
