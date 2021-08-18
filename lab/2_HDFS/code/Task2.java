@@ -22,8 +22,8 @@ public class Task2 {
      * @param conf     org.apache.hadoop.conf.Configuration
      */
     public static void copyToLocalFile(String hdfsDir, String localDir, Configuration conf) {
-        FSDataInputStream inputStream = null;
-        FSDataOutputStream outputStream = null;
+        FSDataInputStream input = null;
+        FSDataOutputStream output = null;
 
         try {
             Path hdfsPath = new Path(hdfsDir);
@@ -58,29 +58,19 @@ public class Task2 {
             }
 
             // 打开输入流
-            inputStream = hdfs.open(hdfsPath);
+            input = hdfs.open(hdfsPath);
 
             // 打开输出流
-            outputStream = local.create(localPath);
+            output = local.create(localPath);
 
             // 复制数据
-            IOUtils.copyBytes(inputStream, outputStream, 4096);
+            IOUtils.copyBytes(input, output, 4096);
 
             System.out.println("下载成功 >> " + localPath);
-
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
-            try {
-                if (null != inputStream) {
-                    inputStream.close();
-                }
-                if (null != outputStream) {
-                    outputStream.close();
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+            IOUtils.closeStreams(output, input);
         }
     }
 }

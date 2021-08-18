@@ -24,7 +24,7 @@ public class Task3 {
      * @param conf    org.apache.hadoop.conf.Configuration
      */
     public static void printFile(String hdfsDir, Configuration conf) {
-        FSDataInputStream inputStream = null;
+        FSDataInputStream input = null;
 
         try {
             Path hdfsPath = new Path(hdfsDir);
@@ -39,16 +39,16 @@ public class Task3 {
                 throw new FileNotFoundException(hdfsDir + " is not a file");
             }
 
-            inputStream = hdfs.open(hdfsPath);
+            input = hdfs.open(hdfsPath);
 
-            IOUtils.copyBytes(inputStream, System.out, 4096);
+            IOUtils.copyBytes(input, System.out, 4096);
 
         } catch (IOException e) {
             e.printStackTrace();
         } finally {
             try {
-                if (null != inputStream) {
-                    inputStream.close();
+                if (null != input) {
+                    input.close();
                 }
             } catch (Exception e) {
                 e.printStackTrace();

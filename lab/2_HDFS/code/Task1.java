@@ -23,8 +23,8 @@ public class Task1 {
      * @param conf      org.apache.hadoop.conf.Configuration
      */
     public static void copyFromLocal(String localDir, String hdfsDir, boolean overwrite, Configuration conf) {
-        FSDataInputStream inputStream = null;
-        FSDataOutputStream outputStream = null;
+        FSDataInputStream input = null;
+        FSDataOutputStream output = null;
 
         try {
             Path localPath = new Path(localDir);
@@ -57,35 +57,26 @@ public class Task1 {
             }
 
             // 打开输入流
-            inputStream = local.open(localPath);
+            input = local.open(localPath);
 
             // 打开输出流
             if (overwrite || !exists) {
                 // 覆盖/创建
-                outputStream = hdfs.create(hdfsPath, true);
+                output = hdfs.create(hdfsPath, true);
             } else {
                 // 追加
-                outputStream = hdfs.append(hdfsPath);
+                output = hdfs.append(hdfsPath);
             }
 
             // 复制数据
-            IOUtils.copyBytes(inputStream, outputStream, 4096);
+            IOUtils.copyBytes(input, output, 4096);
 
             System.out.println("上传成功");
 
         } catch (IOException e) {
             e.printStackTrace();
         } finally {
-            try {
-                if (null != inputStream) {
-                    inputStream.close();
-                }
-                if (null != outputStream) {
-                    outputStream.close();
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+            IOUtils.closeStreams(output, input);
         }
     }
 }
