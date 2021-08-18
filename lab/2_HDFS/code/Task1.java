@@ -48,6 +48,12 @@ public class Task1 {
                 if (!hdfsFileStatus.isFile()) {
                     throw new FileExistsException(hdfsDir + " is not a file");
                 }
+            } else {
+                // 创建父目录
+                Path parentPath = hdfsPath.getParent();
+                if (!hdfs.exists(parentPath)) {
+                    hdfs.mkdirs(parentPath);
+                }
             }
 
             // 打开输入流

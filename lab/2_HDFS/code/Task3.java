@@ -9,6 +9,9 @@ import org.apache.hadoop.io.IOUtils;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 
+/**
+ * 将 HDFS 中指定文件的内容输出到终端
+ */
 public class Task3 {
 
     public static void example(Configuration conf) {

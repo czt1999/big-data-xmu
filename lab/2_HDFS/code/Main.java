@@ -9,5 +9,8 @@ public class Main {
         //Task1.example(conf);
         //Task2.example(conf);
         //Task3.example(conf);
+        //Task4.example(conf);
+        //Task5.example(conf);
+        //Task6.example(conf);
     }
 }
