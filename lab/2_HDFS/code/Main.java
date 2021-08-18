@@ -4,7 +4,7 @@ public class Main {
 
     public static void main(String[] args) {
         Configuration conf = new Configuration();
-        conf.set("fs.defaultFS", "hdfs://localhost:9000");
+        conf.set("fs.default.name", "hdfs://localhost:9000");
         conf.set("fs.hdfs.impl", "org.apache.hadoop.hdfs.DistributedFileSystem");
 
         // required by APPEND_FILE
@@ -21,5 +21,7 @@ public class Main {
         //Task8.example(conf);
         //Task9.example(conf);
         //Task10.example(conf);
+
+        //TaskOfURL.example(conf);
     }
 }

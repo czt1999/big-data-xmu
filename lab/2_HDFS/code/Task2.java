@@ -12,7 +12,7 @@ public class Task2 {
 
     public static void example(Configuration conf) {
         String hdfsDir = "hdfs://localhost:9000/user/czt/profile";
-        String localDIr = "/tmp/hdfs/czt/profile";
+        String localDIr = "/tmp/hadoop/hdfs/profile";
         Task2.copyToLocalFile(hdfsDir, localDIr, conf);
     }
 
@@ -53,8 +53,11 @@ public class Task2 {
                     suffix = localDir.substring(indexOfDot);
                     filename = filename.substring(0, filename.length() - suffix.length());
                 }
-                newLocalDir = localDir.substring(0, indexOfSep + 1) + filename + "~" + suffix;
-                localPath = new Path(newLocalDir);
+                int i = 1;
+                do {
+                    newLocalDir = localDir.substring(0, indexOfSep + 1) + filename + "_" + (i++) + suffix;
+                    localPath = new Path(newLocalDir);
+                } while (local.exists(localPath));
             }
 
             // 打开输入流
