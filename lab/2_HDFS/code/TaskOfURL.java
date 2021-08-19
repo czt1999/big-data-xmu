@@ -1,4 +1,3 @@
-import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FsUrlStreamHandlerFactory;
 import org.apache.hadoop.io.IOUtils;
 
@@ -20,9 +19,8 @@ public class TaskOfURL {
 
     /**
      * @param hdfsDir hdfs文件路径
-     * @param conf    org.apache.hadoop.conf.Configuration
      */
-    public static void printText(String hdfsDir, Configuration conf) {
+    public static void printText(String hdfsDir) {
         try (InputStream in = new URL(hdfsDir).openStream()) {
             IOUtils.copyBytes(in, System.out, 4096);
         } catch (IOException e) {
@@ -30,7 +28,7 @@ public class TaskOfURL {
         }
     }
 
-    public static void example(Configuration conf) {
-        TaskOfURL.printText("hdfs://localhost:9000/user/czt/profile", conf);
+    public static void example() {
+        TaskOfURL.printText("hdfs://localhost:9000/user/czt/profile");
     }
 }
