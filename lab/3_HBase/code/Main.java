@@ -18,43 +18,43 @@ public class Main {
     private static Admin admin;
 
     public static void main(String[] args) {
-        init();
         try {
+            init();
+
             Task1.showTables(admin);
+            // Task1.showRecord("t1", admin);
+            // Task1.addColumnFamily("t1", "java", admin);
+            // Task1.deleteColumnFamily("t1", "java", admin);
+            // Task1.count("t1", admin);
+            // Task1.truncate("t1", admin);
+            // Task1.count("t1", admin);
+
+            close();
         } catch (IOException e) {
             e.printStackTrace();
-        } finally {
-            close();
         }
     }
 
     /**
      * 初始化，建立连接
      */
-    public static void init() {
+    public static void init() throws IOException {
         conf = HBaseConfiguration.create();
-        conf.set("hbase.rootdir", "hdfs://localhost:9000/hbase");
-        try {
-            connection = ConnectionFactory.createConnection(conf);
-            admin = connection.getAdmin();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        conf.set("hbase.rootdir", "hdfs://192.168.3.9:9000/hbase");
+        conf.set("hbase.zookeeper.quorum", "192.168.3.9"); // 默认IP: 127.0.0.1 默认端口: 2181
+        connection = ConnectionFactory.createConnection(conf);
+        admin = connection.getAdmin();
     }
 
     /**
      * 关闭连接
      */
-    public static void close() {
-        try {
-            if (null != admin) {
-                admin.close();
-            }
-            if (null != connection) {
-                connection.close();
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
+    public static void close() throws IOException {
+        if (null != admin) {
+            admin.close();
+        }
+        if (null != connection) {
+            connection.close();
         }
     }
 
