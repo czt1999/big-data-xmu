@@ -22,7 +22,8 @@ public class Task1 {
             for (ColumnFamilyDescriptor cfd : td.getColumnFamilies()) {
                 System.out.print(cfd.getNameAsString() + " ");
             }
-            System.out.println("\n======================================");
+            System.out.println("\n只读: " + (td.isReadOnly() ? "是" : "否"));
+            System.out.println("======================================");
         }
     }
 
@@ -66,7 +67,7 @@ public class Task1 {
      * @param columnFamily 列族名
      * @param admin        org.apache.hadoop.hbase.client.Admin
      */
-    public static void addColumnFamily(String tableName, String columnFamily,
+    public static void addColumnFamily(String tableName, String columnFamily, String qualifier,
                                        Admin admin) throws IOException {
         System.out.print("ADD " + tableName + "{" + columnFamily + "}" + " >> ");
         TableName tname = TableName.valueOf(tableName);

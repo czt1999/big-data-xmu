@@ -21,13 +21,19 @@ public class Main {
         try {
             init();
 
-            Task1.showTables(admin);
-            // Task1.showRecord("t1", admin);
+            // Task1.showTables(admin);
+            Task1.showRecord("t2", admin);
             // Task1.addColumnFamily("t1", "java", admin);
             // Task1.deleteColumnFamily("t1", "java", admin);
             // Task1.count("t1", admin);
             // Task1.truncate("t1", admin);
             // Task1.count("t1", admin);
+
+            // Task2.createTable("t2", new String[]{"f1", "f2", "f3"}, admin);
+            // Task2.addRecord("t2", "1001",
+            //        new String[]{"f1:c1", "f2:c2", "f3:c3"},
+            //        new String[]{"v1", "v2", "v3"}, admin);
+            // Task2.scanColumn("t2", "f1", admin);
 
             close();
         } catch (IOException e) {
