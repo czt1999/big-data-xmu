@@ -116,11 +116,43 @@ public class Task2 {
         System.out.println(StringUtils.repeat('=', 40 + tableName.length()));
     }
 
-    public static void modifyData(String tableName, String row, String column, Admin admin) {
-
+    /**
+     * 修改指定的单元格数据
+     *
+     * @param tableName 表名
+     * @param row       行
+     * @param column    列
+     * @param value     数据
+     * @param admin     org.apache.hadoop.hbase.client.Admin
+     */
+    public static void modifyData(String tableName, String row, String column,
+                                  String value, Admin admin) throws IOException {
+        TableName tname = TableName.valueOf(tableName);
+        Asserts.check(admin.tableExists(tname), tableName + "does not exist");
+        Table table = admin.getConnection().getTable(tname);
+        byte[] rowBytes = row.getBytes();
+        Asserts.check(table.exists(new Get(rowBytes)), "row " + row + " does not exist");
+        String split[] = column.split(":");
+        Asserts.check(2 >= split.length, "Wrong format of column: " + column);
+        CellBuilder cellBuilder = CellBuilderFactory.create(CellBuilderType.SHALLOW_COPY)
+                .setType(Cell.Type.Put).setRow(rowBytes)
+                .setFamily(split[0].getBytes()).setValue(value.getBytes());
+        if (2 == split.length) {
+            cellBuilder.setQualifier(split[1].getBytes());
+        }
+        table.put(new Put(rowBytes).add(cellBuilder.build()));
     }
 
-    public static void deleteRow(String tableName, String row, Admin admin) {
-
+    /**
+     * 删除指定的行的记录
+     *
+     * @param tableName 表名
+     * @param row       行号
+     * @param admin     org.apache.hadoop.hbase.client.Admin
+     */
+    public static void deleteRow(String tableName, String row, Admin admin) throws IOException {
+        TableName tname = TableName.valueOf(tableName);
+        Asserts.check(admin.tableExists(tname), tableName + "does not exist");
+        admin.getConnection().getTable(tname).delete(new Delete(row.getBytes()));
     }
 }

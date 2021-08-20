@@ -31,9 +31,11 @@ public class Main {
 
             // Task2.createTable("t2", new String[]{"f1", "f2", "f3"}, admin);
             // Task2.addRecord("t2", "1001",
-            //        new String[]{"f1:c1", "f2:c2", "f3:c3"},
-            //        new String[]{"v1", "v2", "v3"}, admin);
+            //        new String[]{"f1:c1", "f1:c10", "f2:c2", "f3:c3"},
+            //        new String[]{"v1", "v10", "v2", "v3"}, admin);
             // Task2.scanColumn("t2", "f1", admin);
+            // Task2.modifyData("t2", "1001", "f1:c1", "v10", admin);
+            // Task2.deleteRow("t2", "1001", admin);
 
             close();
         } catch (IOException e) {
