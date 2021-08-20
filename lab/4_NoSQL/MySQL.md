@@ -5,7 +5,7 @@
 ```sql
 CREATE TABLE `t_student` (
     `student_id` INT AUTO_INCREMENT,
-	`student_name` VARCHAR(32) NOT NULL,
+    `student_name` VARCHAR(32) NOT NULL,
     `english` INT(3) NOT NULL,
     `math` INT(3) NOT NULL,
     `computer` INT(3) NOT NULL,
