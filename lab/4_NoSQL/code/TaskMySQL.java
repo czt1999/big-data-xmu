@@ -5,9 +5,16 @@ public class TaskMySQL {
     public static void main(String[] args) {
         String url = "jdbc:mysql://192.168.3.9:3306/reader_home?useUnicode=true&characterEncoding=UTF-8&useSSL=true";
         String user = "root";
-        String password = "mysql1111";
+        String password = ""; // Your password
 
         // The driver `com.mysql.cj.jdbc.Driver` will be automatically loaded by SPI
+
+        // You may have to manually grant privileges of MySQL for remote access by the script below
+        //
+        // $ grant all privileges on *.* to 'root'@'%' identified by '123456' with grant option;
+        // $ flush privileges;
+        //
+        // Moreover, configure bind-address => 0.0.0.0
 
         Connection connection = null;
         PreparedStatement preparedStatement = null;
@@ -49,9 +56,4 @@ public class TaskMySQL {
             }
         }
     }
-
-    // PS:
-    // You may have to manually grant privileges of MySQL for remote access by the script below.
-    // $ grant all privileges on *.* to 'root'@'%' identified by '123456' with grant option;
-    // $ flush privileges;
 }
