@@ -55,7 +55,7 @@ export HBASE_MANAGES_ZK=true
 配置完成后，启动 HBase：
 
 ```bash
-/usr/local/hbase/bin/start-hbase.sh
+start-hbase.sh
 ```
 
 使用 `jps` 可以看到一个名为 HMaster 的进程。
@@ -66,3 +66,16 @@ export HBASE_MANAGES_ZK=true
 
 先启动 Hadoop，再启动 HBase。
 
+#### 5. 关闭
+
+```bash
+stop-hbase.sh
+```
+
+若一直显示 `stopping hbase ...` ，则先退出当前进程，换成以下命令：
+
+```bash
+hbase-daemon.sh stop master
+```
+
+再执行 `stop-hbase.sh` 。
