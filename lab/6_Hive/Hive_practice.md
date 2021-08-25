@@ -148,6 +148,7 @@ Hive 特有的分组（分区）排序方法：
 
 ```sql
 ROW_NUMBER() OVER (PARTITION BY 分区项A ORDER BY 排序项B [DESC]) rank
+# 以 rank 的值作为排序依据
 ```
 
 
