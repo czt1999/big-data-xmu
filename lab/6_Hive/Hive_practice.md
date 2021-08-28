@@ -12,8 +12,7 @@ CREATE TABLE IF NOT EXISTS stocks(
   `volume` int,
   `price_adj_close` float
 )
-ROW FORMAT DELIMITED
-FIELDS TERMINATED BY ',';
+ROW FORMAT DELIMITED FIELDS TERMINATED BY ',';
 ```
 
 内部表又称托管表（managed table）。配置文件 `hive-default.xml` 指定了内部表的默认存放位置，一般是 HDFS 上的 `/user/hive/warehouse` ，在建表时可以用 `LOCATION` 关键字进行自定义。
@@ -66,6 +65,7 @@ INTO TABLE dividends_unpartitioned;
 
 ```sql
 SET hive.exec.dynamic.partition.mode=nonstrick;
+SET hive.exec.max.dynamic.partitions.pernode=1500;
 
 INSERT OVERWRITE TABLE dividends partition(`exchange`,`symbol`)
 SELECT du.`ymd`, du.`dividend`, du.`exchange`, du.`symbol`
